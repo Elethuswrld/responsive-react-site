@@ -128,26 +128,43 @@ const CheckoutButton = styled.button`
   }
 `;
 
-const CartPage = ({ cartItems, on
+const CartPage = ({ cartItems, onUpdateQuantity, onRemoveItem, cartTotal }) => {
+    const handleRemove = (item) => {
+        if (window.confirm(`Are you sure you want to remove all ${item.name} from your cart?`)) {
+            onRemoveItem(item.id);
+        }
+    };
+
+    const handleQuantityDecrease = (item) => {
+        if (item.quantity === 1) {
+            if (window.confirm(`Are you sure you want to remove ${item.name} from your cart?`)) {
+                onUpdateQuantity(item.id, -1);
+            }
+        } else {
+            onUpdateQuantity(item.id, -1);
+        }
+    };
+
+    return (
         <CartPageContainer>
             <CartHeader>Your Shopping Cart</CartHeader>
             {cartItems.length === 0 ? (
                 <EmptyCartMessage>Your cart is empty.</EmptyCartMessage>
             ) : (
-                 
-                  alt={item.name} />
+                <>
+                    {cartItems.map((item) => (
+                        <CartItem key={item.id}>
+                            <CartItemImage src={item.imageUrl} alt={item.name} />
                             <CartItemInfo>
                                 <ProductName>{item.name}</ProductName>
                                 <ProductPrice>{item.price}</ProductPrice>
                             </CartItemInfo>
                             <QuantityControl>
-                                <QuantityButton onClick={() => onUpdateQuantity(item.id, -1)}>-</QuantityButton>
-                                <QuantityityButton>
+                                <QuantityButton onClick={() => handleQuantityDecrease(item)}>-</QuantityButton>
+                                <QuantityDisplay>{item.quantity}</QuantityDisplay>
+                                <QuantityButton onClick={() => onUpdateQuantity(item.id, 1)}>+</QuantityButton>
                             </QuantityControl>
-                            {/* The original "Remove" button now completely removes the item */}
-                            <RemoveButton onClick={() => onRemoveItem(item.id)}>
-                                Remove
-                            </RemoveButton>
+                            <RemoveButton onClick={() => handleRemove(item)}>Remove</RemoveButton>
                         </CartItem>
                     ))}
                     <CartSummary>
@@ -156,6 +173,7 @@ const CartPage = ({ cartItems, on
                     </CartSummary>
                 </>
             )}
+        </CartPageContainer>
     );
 };
 
