@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import { Link } from 'react-router-dom';
 
 const HomePageContainer = styled.div`
   background-color: #f0f0f0;
@@ -56,7 +57,11 @@ const ProductGrid = styled.div`
 `;
 
 // Card for a single product
-const ProductCard = styled.div`
+const ProductCard = styled(Link)`
+  /* We are turning the card into a link */
+  text-decoration: none;
+  color: inherit;
+
   background-color: white;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -126,7 +131,7 @@ const HomePage = ({ products, onAddToCart, categories, selectedCategory, onSelec
             </CategoryFilterContainer>
             <ProductGrid>
                 {products.map(product => (
-                    <ProductCard key={product.id}>
+                    <ProductCard key={product.id} to={`/product/${product.id}`}>
                         <ProductImage src={product.imageUrl} alt={product.name} />
                         <ProductInfo>
                             <ProductName>{product.name}</ProductName>

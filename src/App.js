@@ -4,6 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import logo from './logo.svg';
 import HomePage from './HomePage';
 import CartPage from './CartPage';
+import ProductDetailPage from './ProductDetailPage';
 import NotFoundPage from './NotFoundPage';
 
 // Define types for better clarity (even in JS, comments help)
@@ -21,12 +22,12 @@ import NotFoundPage from './NotFoundPage';
 
 // Dummy data for our products
 const dummyProducts = [
-  { id: 1, name: 'Stylish Backpack', category: 'backpacks', price: 'R229.00', imageUrl: 'https://th.bing.com/th?id=OPEC.FSI4uL%2fgQ3fkeg474C474&w=248&h=248&c=17&o=5&pid=21.1' },
-  { id: 2, name: 'Wireless Headphones', category: 'other', price: 'R899.00', imageUrl: 'https://th.bing.com/th?id=OPEC.gR%2bt%2bonFn114DA474C474&w=300&h=300&o=5&pid=21.1' },
-  { id: 3, name: 'Modern Smartwatch', category: 'other', price: 'R199.00', imageUrl: 'https://img.freepik.com/premium-photo/hightech-modern-smartwatch_1281602-6309.jpg' },
-  { id: 4, name: 'Leather Wallet', category: 'wallets', price: 'R260.00', imageUrl: 'https://th.bing.com/th/id/OPEC.kvhIyw14syGIVA474C474?w=248&h=248&c=17&o=5&pid=21.1' },
-  { id: 5, name: 'Classic Sunglasses', category: 'glasses', price: 'R75.00', imageUrl: 'https://th.bing.com/th/id/OPEC.zU2PhTBg64mjHQ474C474?w=248&h=248&c=17&o=5&pid=21.1' },
-  { id: 6, name: 'Running Shoes', category: 'shoes', price: 'R497.60', imageUrl: 'https://th.bing.com/th?id=OPEC.Hrcm%2feYYGKUvdA474C474&w=248&h=248&c=17&o=5&pid=21.1' },
+  { id: 1, name: 'Stylish Backpack', category: 'backpacks', price: 'R229.00', imageUrl: 'https://th.bing.com/th?id=OPEC.FSI4uL%2fgQ3fkeg474C474&w=248&h=248&c=17&o=5&pid=21.1', description: 'A stylish and durable backpack for all your daily needs. Features multiple compartments and a padded laptop sleeve.' },
+  { id: 2, name: 'Wireless Headphones', category: 'other', price: 'R899.00', imageUrl: 'https://th.bing.com/th?id=OPEC.gR%2bt%2bonFn114DA474C474&w=300&h=300&o=5&pid=21.1', description: 'Experience crystal-clear audio with these noise-cancelling wireless headphones. Long-lasting battery and comfortable fit.' },
+  { id: 3, name: 'Modern Smartwatch', category: 'other', price: 'R199.00', imageUrl: 'https://img.freepik.com/premium-photo/hightech-modern-smartwatch_1281602-6309.jpg', description: 'Stay connected with this sleek smartwatch. Track your fitness, receive notifications, and customize your watch face.' },
+  { id: 4, name: 'Leather Wallet', category: 'wallets', price: 'R260.00', imageUrl: 'https://th.bing.com/th/id/OPEC.kvhIyw14syGIVA474C474?w=248&h=248&c=17&o=5&pid=21.1', description: 'A classic bifold wallet made from genuine leather. Slim, stylish, and built to last with multiple card slots.' },
+  { id: 5, name: 'Classic Sunglasses', category: 'glasses', price: 'R75.00', imageUrl: 'https://th.bing.com/th/id/OPEC.zU2PhTBg64mjHQ474C474?w=248&h=248&c=17&o=5&pid=21.1', description: 'Protect your eyes with these timeless sunglasses. Featuring UV400 protection and a lightweight frame.' },
+  { id: 6, name: 'Running Shoes', category: 'shoes', price: 'R497.60', imageUrl: 'https://th.bing.com/th?id=OPEC.Hrcm%2feYYGKUvdA474C474&w=248&h=248&c=17&o=5&pid=21.1', description: 'Achieve your new personal best with these comfortable and responsive running shoes. Ideal for road and trail running.' },
 ];
 
 // Header component
@@ -182,6 +183,10 @@ function App() {
           <Route 
             path="/cart" 
             element={<CartPage cartItems={cart} onUpdateQuantity={updateCartItemQuantity} onRemoveItem={removeItemFromCart} cartTotal={cartTotal} />} 
+          />
+          <Route 
+            path="/product/:id" 
+            element={<ProductDetailPage products={dummyProducts} onAddToCart={addToCart} />} 
           />
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
