@@ -151,6 +151,10 @@ function App() {
     return total + (price * item.quantity); // Multiply by quantity
   }, 0);
 
+  const totalCartQuantity = cart.reduce((sum, item) => {
+    return sum + item.quantity;
+  }, 0);
+
   const filteredProducts = category === 'all' 
     ? dummyProducts 
     : dummyProducts.filter(product => product.category === category);
@@ -165,7 +169,7 @@ function App() {
           <SiteTitle>React Store</SiteTitle>
         </Link>
         <Link to="/cart" style={{ textDecoration: 'none', color: 'white' }}>
-          <CartStatus>Cart: {cart.length} items</CartStatus>
+          <CartStatus>Cart: {totalCartQuantity} items</CartStatus>
         </Link>
       </Header>
       <main>
