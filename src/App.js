@@ -5,6 +5,19 @@ import logo from './logo.svg';
 import HomePage from './HomePage';
 import CartPage from './CartPage';
 
+// Define types for better clarity (even in JS, comments help)
+// type Product = {
+//   id: number;
+//   name: string;
+//   price: string; // e.g., 'R229.00'
+//   imageUrl: string;
+// };
+
+// type CartItem = Product & {
+//   quantity: number;
+// };
+
+
 // Dummy data for our products
 const dummyProducts = [
   { id: 1, name: 'Stylish Backpack', price: 'R229.00', imageUrl: 'https://th.bing.com/th?id=OPEC.FSI4uL%2fgQ3fkeg474C474&w=248&h=248&c=17&o=5&pid=21.1' },
@@ -68,23 +81,71 @@ const CopyrightText = styled.p`
 `;
 
 function App() {
-  const [cart, setCart] = useState([]);
+  // Cart now stores unique items with quantities
+  const [cart, setCart] = useState([]); // CartItem[]
 
   const addToCart = (productToAdd) => {
-    // For now, we'll just add the product to the array.
-    // A more advanced cart would check for duplicates and update quantity.
-    setCart(currentCart => [...currentCart, productToAdd]);
-    alert(`Added ${productToAdd.name} to cart!`);
+    setCart(currentCart => {
+      const existingItemIndex = currentCart.findIndex(item => item.id === productToAdd.id);
+
+      if (existingItemIndex > -1) {
+        // Item already in cart, increase quantity
+        const updatedCart = [...currentCart];
+        updatedCart[existingItemIndex] = {
+          ...updatedCart[existingItemIndex],
+          quantity: updatedCart[existingItemIndex].quantity + 1
+        };
+        alert(`Increased quantity of ${productToAdd.name} in cart!`);
+        return updatedCart;
+      } else {
+        // Item not in cart, add with quantity 1
+        alert(`Added ${productToAdd.name} to cart!`);
+        return [...currentCart, { ...productToAdd, quantity: 1 }];
+      }
+    });
   };
 
-  const removeFromCart = (indexToRemove) => {
-    setCart(currentCart => currentCart.filter((_, index) => index !== indexToRemove));
-    alert('Item removed from cart.');
+  const updateCartItemQuantity = (productId, delta) => {
+    setCart(currentCart => {
+      const existingItemIndex = currentCart.findIndex(item => item.id === productId);
+
+      if (existingItemIndex === -1) {
+        return currentCart; // Should not happen if called correctly
+      }
+
+      const updatedCart = [...currentCart];
+      const currentQuantity = updatedCart[existingItemIndex].quantity;
+      const newQuantity = currentQuantity + delta;
+
+      if (newQuantity <= 0) {
+        // Remove item if quantity drops to 0 or less
+        alert(`Removed ${updatedCart[existingItemIndex].name} from cart.`);
+        return updatedCart.filter(item => item.id !== productId);
+      } else {
+        // Update quantity
+        updatedCart[existingItemIndex] = {
+          ...updatedCart[existingItemIndex],
+          quantity: newQuantity
+        };
+        alert(`Updated quantity of ${updatedCart[existingItemIndex].name} to ${newQuantity}.`);
+        return updatedCart;
+      }
+    });
+  };
+
+  const removeItemFromCart = (productId) => {
+    setCart(currentCart => {
+      const itemToRemove = currentCart.find(item => item.id === productId);
+      if (itemToRemove) {
+        alert(`Removed all ${itemToRemove.name} from cart.`);
+      }
+      return currentCart.filter(item => item.id !== productId);
+    });
   };
 
   const cartTotal = cart.reduce((total, item) => {
     const price = parseFloat(item.price.replace('R', ''));
-    return total + price;
+    return total + (price * item.quantity); // Multiply by quantity
   }, 0);
 
   return (
@@ -106,7 +167,7 @@ function App() {
           />
           <Route 
             path="/cart" 
-            element={<CartPage cartItems={cart} onRemoveFromCart={removeFromCart} cartTotal={cartTotal} />} 
+            element={<CartPage cartItems={cart} onUpdateQuantity={updateCartItemQuantity} onRemoveItem={removeItemFromCart} cartTotal={cartTotal} />} 
           />
         </Routes>
       </main>

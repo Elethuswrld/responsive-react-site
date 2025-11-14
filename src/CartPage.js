@@ -49,6 +49,29 @@ const ProductPrice = styled.p`
   color: #666;
 `;
 
+const QuantityControl = styled.div`
+  display: flex;
+  align-items: center;
+  margin-left: 1rem;
+`;
+
+const QuantityButton = styled.button`
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.3rem 0.6rem;
+  font-size: 1rem;
+  cursor: pointer;
+  &:hover {
+    background-color: #e0e0e0;
+  }
+`;
+
+const QuantityDisplay = styled.span`
+  margin: 0 0.8rem;
+  font-size: 1.1rem;
+`;
+
 const EmptyCartMessage = styled.p`
   font-size: 1.2rem;
   color: #666;
@@ -105,31 +128,34 @@ const CheckoutButton = styled.button`
   }
 `;
 
-const CartPage = ({ cartItems, onRemoveFromCart, cartTotal }) => {
-    return (
+const CartPage = ({ cartItems, on
         <CartPageContainer>
             <CartHeader>Your Shopping Cart</CartHeader>
             {cartItems.length === 0 ? (
                 <EmptyCartMessage>Your cart is empty.</EmptyCartMessage>
             ) : (
-                <>
-                    {cartItems.map((item, index) => (
-                        <CartItem key={`${item.id}-${index}`}>
-                            <CartItemImage src={item.imageUrl} alt={item.name} />
+                 
+                  alt={item.name} />
                             <CartItemInfo>
                                 <ProductName>{item.name}</ProductName>
                                 <ProductPrice>{item.price}</ProductPrice>
-                            </Info>
-                            <RemoveButton onClick={() => onRemoveFromCart(index)}>Remove</RemoveButton>
+                            </CartItemInfo>
+                            <QuantityControl>
+                                <QuantityButton onClick={() => onUpdateQuantity(item.id, -1)}>-</QuantityButton>
+                                <QuantityityButton>
+                            </QuantityControl>
+                            {/* The original "Remove" button now completely removes the item */}
+                            <RemoveButton onClick={() => onRemoveItem(item.id)}>
+                                Remove
+                            </RemoveButton>
                         </CartItem>
                     ))}
                     <CartSummary>
                         <TotalPrice>Total: R{cartTotal.toFixed(2)}</TotalPrice>
-                        <CheckoutButton onClick={() => alert('This is just a demo. No real checkout process!')}>Checkout</CheckoutButton>
+                        <CheckoutButton onClick={() => alert('This is just a demo. No real checkout process!')} disabled={cartItems.length === 0}>Checkout</CheckoutButton>
                     </CartSummary>
                 </>
             )}
-        </CartPageContainer>
     );
 };
 
