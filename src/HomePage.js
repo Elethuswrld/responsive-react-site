@@ -1,6 +1,36 @@
 import React from 'react';
 import styled from 'styled-components';
 
+const HomePageContainer = styled.div`
+  background-color: #f0f0f0;
+`;
+
+const CategoryFilterContainer = styled.div`
+  padding: 1rem 1.5rem;
+  background-color: white;
+  border-bottom: 1px solid #e0e0e0;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+`;
+
+const CategoryButton = styled.button`
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  border: 1px solid #ccc;
+  background-color: ${props => props.active ? '#282c34' : 'white'};
+  color: ${props => props.active ? 'white' : '#333'};
+  font-size: 0.9rem;
+  text-transform: capitalize;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+`;
+
 // Grid container for the products
 const ProductGrid = styled.div`
   display: grid;
@@ -17,6 +47,11 @@ const ProductGrid = styled.div`
   /* 3 columns on desktops */
   @media (min-width: 900px) {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  /* 4 columns on large desktops */
+  @media (min-width: 1200px) {
+    grid-template-columns: repeat(4, 1fr);
   }
 `;
 
@@ -77,20 +112,31 @@ const AddToCartButton = styled.button`
   }
 `;
 
-const HomePage = ({ products, onAddToCart }) => {
+const HomePage = ({ products, onAddToCart, categories, selectedCategory, onSelectCategory }) => {
     return (
-        <ProductGrid>
-            {products.map(product => (
-                <ProductCard key={product.id}>
-                    <ProductImage src={product.imageUrl} alt={product.name} />
-                    <ProductInfo>
-                        <ProductName>{product.name}</ProductName>
-                        <ProductPrice>{product.price}</ProductPrice>
-                    </ProductInfo>
-                    <AddToCartButton onClick={() => onAddToCart(product)}>Add to Cart</AddToCartButton>
-                </ProductCard>
-            ))}
-        </ProductGrid>
+        <HomePageContainer>
+            <CategoryFilterContainer>
+                {categories.map(category => (
+                    <CategoryButton 
+                        key={category} 
+                        active={selectedCategory === category}
+                        onClick={() => onSelectCategory(category)}
+                    >{category}</CategoryButton>
+                ))}
+            </CategoryFilterContainer>
+            <ProductGrid>
+                {products.map(product => (
+                    <ProductCard key={product.id}>
+                        <ProductImage src={product.imageUrl} alt={product.name} />
+                        <ProductInfo>
+                            <ProductName>{product.name}</ProductName>
+                            <ProductPrice>{product.price}</ProductPrice>
+                        </ProductInfo>
+                        <AddToCartButton onClick={() => onAddToCart(product)}>Add to Cart</AddToCartButton>
+                    </ProductCard>
+                ))}
+            </ProductGrid>
+        </HomePageContainer>
     );
 };
 

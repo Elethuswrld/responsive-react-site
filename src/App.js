@@ -4,6 +4,7 @@ import { Routes, Route, Link } from 'react-router-dom';
 import logo from './logo.svg';
 import HomePage from './HomePage';
 import CartPage from './CartPage';
+import NotFoundPage from './NotFoundPage';
 
 // Define types for better clarity (even in JS, comments help)
 // type Product = {
@@ -20,12 +21,12 @@ import CartPage from './CartPage';
 
 // Dummy data for our products
 const dummyProducts = [
-  { id: 1, name: 'Stylish Backpack', price: 'R229.00', imageUrl: 'https://th.bing.com/th?id=OPEC.FSI4uL%2fgQ3fkeg474C474&w=248&h=248&c=17&o=5&pid=21.1' },
-  { id: 2, name: 'Wireless Headphones', price: 'R899.00', imageUrl: 'https://th.bing.com/th?id=OPEC.gR%2bt%2bonFn114DA474C474&w=300&h=300&o=5&pid=21.1' },
-  { id: 3, name: 'Modern Smartwatch', price: 'R199.00', imageUrl: 'https://img.freepik.com/premium-photo/hightech-modern-smartwatch_1281602-6309.jpg' },
-  { id: 4, name: 'Leather Wallet', price: 'R260.00', imageUrl: 'https://th.bing.com/th/id/OPEC.kvhIyw14syGIVA474C474?w=248&h=248&c=17&o=5&pid=21.1' },
-  { id: 5, name: 'Classic Sunglasses', price: 'R75.00', imageUrl: 'https://th.bing.com/th/id/OPEC.zU2PhTBg64mjHQ474C474?w=248&h=248&c=17&o=5&pid=21.1' },
-  { id: 6, name: 'Running Shoes', price: 'R497.60', imageUrl: 'https://th.bing.com/th?id=OPEC.Hrcm%2feYYGKUvdA474C474&w=248&h=248&c=17&o=5&pid=21.1' },
+  { id: 1, name: 'Stylish Backpack', category: 'backpacks', price: 'R229.00', imageUrl: 'https://th.bing.com/th?id=OPEC.FSI4uL%2fgQ3fkeg474C474&w=248&h=248&c=17&o=5&pid=21.1' },
+  { id: 2, name: 'Wireless Headphones', category: 'other', price: 'R899.00', imageUrl: 'https://th.bing.com/th?id=OPEC.gR%2bt%2bonFn114DA474C474&w=300&h=300&o=5&pid=21.1' },
+  { id: 3, name: 'Modern Smartwatch', category: 'other', price: 'R199.00', imageUrl: 'https://img.freepik.com/premium-photo/hightech-modern-smartwatch_1281602-6309.jpg' },
+  { id: 4, name: 'Leather Wallet', category: 'wallets', price: 'R260.00', imageUrl: 'https://th.bing.com/th/id/OPEC.kvhIyw14syGIVA474C474?w=248&h=248&c=17&o=5&pid=21.1' },
+  { id: 5, name: 'Classic Sunglasses', category: 'glasses', price: 'R75.00', imageUrl: 'https://th.bing.com/th/id/OPEC.zU2PhTBg64mjHQ474C474?w=248&h=248&c=17&o=5&pid=21.1' },
+  { id: 6, name: 'Running Shoes', category: 'shoes', price: 'R497.60', imageUrl: 'https://th.bing.com/th?id=OPEC.Hrcm%2feYYGKUvdA474C474&w=248&h=248&c=17&o=5&pid=21.1' },
 ];
 
 // Header component
@@ -83,6 +84,7 @@ const CopyrightText = styled.p`
 function App() {
   // Cart now stores unique items with quantities
   const [cart, setCart] = useState([]); // CartItem[]
+  const [category, setCategory] = useState('all');
 
   const addToCart = (productToAdd) => {
     setCart(currentCart => {
@@ -148,6 +150,12 @@ function App() {
     return total + (price * item.quantity); // Multiply by quantity
   }, 0);
 
+  const filteredProducts = category === 'all' 
+    ? dummyProducts 
+    : dummyProducts.filter(product => product.category === category);
+
+  const categories = ['all', 'shoes', 'glasses', 'backpacks', 'wallets', 'other'];
+
   return (
     <>
       <Header>
@@ -163,12 +171,19 @@ function App() {
         <Routes>
           <Route 
             path="/" 
-            element={<HomePage products={dummyProducts} onAddToCart={addToCart} />} 
+            element={<HomePage 
+              products={filteredProducts} 
+              onAddToCart={addToCart} 
+              categories={categories}
+              selectedCategory={category}
+              onSelectCategory={setCategory}
+            />} 
           />
           <Route 
             path="/cart" 
             element={<CartPage cartItems={cart} onUpdateQuantity={updateCartItemQuantity} onRemoveItem={removeItemFromCart} cartTotal={cartTotal} />} 
           />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       <Footer>
